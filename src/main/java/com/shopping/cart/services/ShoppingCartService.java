@@ -1,6 +1,6 @@
 package com.shopping.cart.services;
 
-import com.shopping.cart.OrderStatus;
+import com.shopping.cart.enums.OrderStatus;
 import com.shopping.cart.constant.ShoppingCartConstant;
 import com.shopping.cart.entity.Item;
 import com.shopping.cart.entity.Order;

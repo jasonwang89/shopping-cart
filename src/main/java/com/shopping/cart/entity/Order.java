@@ -1,7 +1,7 @@
 package com.shopping.cart.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.shopping.cart.OrderStatus;
+import com.shopping.cart.enums.OrderStatus;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
