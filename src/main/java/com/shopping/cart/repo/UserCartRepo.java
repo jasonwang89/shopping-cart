@@ -9,4 +9,6 @@ public interface UserCartRepo extends JpaRepository<UserCart, Long> {
 	public UserCart findByCartIdAndItemId(long cartId, long itemId);
 
 	public List<UserCart> findAllByUserIdAndCartIdAndIsPayed(long userId, long cartId, boolean isPayed);
+
+	public void deleteAllByUserIdAndCartId(long userId, long cartId);
 }

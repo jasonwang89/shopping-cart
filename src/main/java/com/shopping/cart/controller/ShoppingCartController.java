@@ -1,6 +1,7 @@
 package com.shopping.cart.controller;
 
 import com.shopping.cart.entity.Item;
+import com.shopping.cart.model.CartData;
 import com.shopping.cart.model.Message;
 import com.shopping.cart.services.ShoppingCartService;
 import io.micrometer.core.lang.Nullable;
@@ -29,13 +30,23 @@ public class ShoppingCartController {
 
 	@GetMapping(path = "/item/{itemId}")
 	public Item getItemDetail(@PathVariable String itemId) {
-		return shoppingCartService.getItem(itemId);
+		return shoppingCartService.getItem(Long.valueOf(itemId));
 	}
 
 	@PutMapping(path ="/cart", produces = "application/json;charset=utf-8")
 	public Message modifyItemCart(@RequestParam String itemId, @RequestParam String number, @RequestParam String userId, @RequestParam @Nullable
 	String cartId) {
 		return shoppingCartService.modifyItemInCart(itemId, Integer.valueOf(number), Long.valueOf(userId), cartId);
+	}
+
+	@GetMapping(path="/cart", produces = "application/json;charset=utf-8")
+	public CartData getAllItemsInCart(@RequestParam String userId, @RequestParam String cartId) {
+		return shoppingCartService.getAllItemsInCart(userId, cartId);
+	}
+
+	@PutMapping(path="/cart/clear", produces = "application/json;charset=utf-8")
+	public void clearCart(@RequestParam String userId, @RequestParam String cartId) {
+		shoppingCartService.clearCart(userId, cartId);
 	}
 
 	@PutMapping(path = "/order/place", produces = "application/json;charset=utf-8")

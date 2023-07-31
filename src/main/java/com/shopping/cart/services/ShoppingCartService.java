@@ -7,6 +7,8 @@ import com.shopping.cart.entity.Order;
 import com.shopping.cart.entity.Storage;
 import com.shopping.cart.entity.User;
 import com.shopping.cart.entity.UserCart;
+import com.shopping.cart.model.CartData;
+import com.shopping.cart.model.ItemData;
 import com.shopping.cart.model.Message;
 import com.shopping.cart.model.TotalAmount;
 import com.shopping.cart.repo.ItemRepo;
@@ -16,6 +18,7 @@ import com.shopping.cart.repo.UserCartRepo;
 import com.shopping.cart.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Random;
@@ -47,14 +50,14 @@ public class ShoppingCartService {
 		return storage.getTotal();
 	}
 
-	public Item getItem(final String itemId) {
-		return itemRepo.getById(Long.valueOf(itemId));
+	public Item getItem(final long itemId) {
+		return itemRepo.getById(itemId);
 	}
 
 	public Message modifyItemInCart(final String itemId, final int num, final long userId, final String cartId) {
 		Message message = new Message("", "");
 		UserCart userCart;
-		Item item = getItem(itemId);
+		Item item = getItem(Long.valueOf(itemId));
 		long cartNum = 0;
 		if(cartId == null || cartId.isEmpty()) {
 			if(!validateStorage(item.getItemId(), num, message)) {
@@ -163,4 +166,31 @@ public class ShoppingCartService {
 		return userCart;
 	}
 
+	@Transactional
+	public void clearCart(String userId, String cartId) {
+		userCartRepo.deleteAllByUserIdAndCartId(Long.valueOf(userId), Long.valueOf(cartId));
+	}
+
+	public CartData getAllItemsInCart(String userId, String cartId) {
+		CartData cartData = new CartData();
+		List<UserCart> items = userCartRepo.findAllByUserIdAndCartIdAndIsPayed(Long.valueOf(userId),Long.valueOf(cartId), false);
+		cartData.setCartId(Long.valueOf(cartId));
+		cartData.setUserId(Long.valueOf(userId));
+		TotalAmount totalAmount = new TotalAmount(0);
+		items.stream().forEach(a-> {
+			ItemData itemData = new ItemData();
+			itemData.setItemId(a.getItemId());
+			Item item = getItem(a.getItemId());
+			itemData.setItemName(item.getName());
+			itemData.setCount(a.getItemNumber());
+			itemData.setSinglePrice(item.getPrice());
+			itemData.setTotal(itemData.getSinglePrice() * itemData.getCount());
+			List<ItemData> itemData1 = cartData.getItemDatas();
+			itemData1.add(itemData);
+			totalAmount.setTotal(totalAmount.getTotal() + itemData.getTotal());
+			cartData.setItemDatas(itemData1);
+			cartData.setTotal(totalAmount.getTotal());
+		});
+		return cartData;
+	}
 }
