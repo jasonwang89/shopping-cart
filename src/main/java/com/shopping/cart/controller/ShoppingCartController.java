@@ -1,6 +1,8 @@
 package com.shopping.cart.controller;
 
 import com.shopping.cart.entity.Item;
+import com.shopping.cart.entity.Order;
+import com.shopping.cart.entity.User;
 import com.shopping.cart.model.CartData;
 import com.shopping.cart.model.Message;
 import com.shopping.cart.model.OrderDetail;
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController()
 public class ShoppingCartController {
@@ -32,6 +36,21 @@ public class ShoppingCartController {
 	@GetMapping(path = "/item/{itemId}")
 	public Item getItemDetail(@PathVariable String itemId) {
 		return shoppingCartService.getItem(Long.valueOf(itemId));
+	}
+
+	@GetMapping(path = "/items")
+	public List<Item> getItems() {
+		return shoppingCartService.getItems();
+	}
+
+	@GetMapping(path = "/users")
+	public List<User> getAllUser() {
+		return shoppingCartService.getUsers();
+	}
+
+	@GetMapping(path = "/orders")
+	public List<Order> getAllOrders() {
+		return shoppingCartService.getAllOrders();
 	}
 
 	@PutMapping(path ="/cart", produces = "application/json;charset=utf-8")
@@ -59,5 +78,4 @@ public class ShoppingCartController {
 	public OrderDetail getOrderDetail(@PathVariable String orderId) {
 		return shoppingCartService.getOrderDetail(orderId);
 	}
-
 }

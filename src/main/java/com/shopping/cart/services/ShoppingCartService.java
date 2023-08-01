@@ -48,6 +48,18 @@ public class ShoppingCartService {
 	@Autowired
 	private UserCartRepo userCartRepo;
 
+	public List<Item> getItems() {
+		return itemRepo.findAll();
+	}
+
+	public List<User> getUsers() {
+		return userRepo.findAll();
+	}
+
+	public List<Order> getAllOrders() {
+		return orderRepo.findAll();
+	}
+
 	public int getStorage(final Long itemId) {
 		Storage storage = storageRepo.getById(itemId);
 		return storage.getTotal();

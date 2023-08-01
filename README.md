@@ -41,6 +41,15 @@ I uploaded postman collection to postman folder.
 7. get order details
 
    http://localhost:8443/shopping-cart/order/{orderId}
+8. get all items
+
+   http://localhost:8443/shopping-cart/items
+9. get all users
+
+   http://localhost:8443/shopping-cart/users
+10. get all orders
+
+   http://localhost:8443/shopping-cart/orders
 
 ---
 

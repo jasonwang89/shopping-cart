@@ -7,6 +7,69 @@
 	},
 	"item": [
 		{
+			"name": "get all items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/item/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"item",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/item/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"item",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/item/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"item",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "check storage",
 			"request": {
 				"method": "GET",
