@@ -1,7 +1,6 @@
 package com.shopping.cart.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.shopping.cart.enums.OrderStatus;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -23,7 +22,7 @@ public class Order {
 
 	private double total;
 
-	private OrderStatus status;
+	private String status;
 
 
 	public Order() {
@@ -77,11 +76,11 @@ public class Order {
 		this.total = total;
 	}
 
-	public OrderStatus getStatus() {
+	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(OrderStatus status) {
+	public void setStatus(String status) {
 		this.status = status;
 	}
 

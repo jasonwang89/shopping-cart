@@ -3,6 +3,7 @@ package com.shopping.cart.controller;
 import com.shopping.cart.entity.Item;
 import com.shopping.cart.model.CartData;
 import com.shopping.cart.model.Message;
+import com.shopping.cart.model.OrderDetail;
 import com.shopping.cart.services.ShoppingCartService;
 import io.micrometer.core.lang.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,4 +54,10 @@ public class ShoppingCartController {
 	public Message placeOrder(@RequestParam String userId, @RequestParam String cartId, @RequestParam String cardNo, @RequestParam String expireDate, @RequestParam String cvc) {
 		return shoppingCartService.placeOrder(userId, cartId, cardNo, expireDate, cvc);
 	}
+
+	@GetMapping(path = "/order/{orderId}", produces = "application/json;charset=utf-8")
+	public OrderDetail getOrderDetail(@PathVariable String orderId) {
+		return shoppingCartService.getOrderDetail(orderId);
+	}
+
 }

@@ -10,6 +10,7 @@ import com.shopping.cart.entity.UserCart;
 import com.shopping.cart.model.CartData;
 import com.shopping.cart.model.ItemData;
 import com.shopping.cart.model.Message;
+import com.shopping.cart.model.OrderDetail;
 import com.shopping.cart.model.TotalAmount;
 import com.shopping.cart.repo.ItemRepo;
 import com.shopping.cart.repo.OrderRepo;
@@ -83,6 +84,7 @@ public class ShoppingCartService {
 			}
 		}
 		message.setStatus(ShoppingCartConstant.SUCCESS);
+		message.setDetail(String.format(CREATE_OR_UPDATE_CART, userCart.getCartId()));
 		return message;
 	}
 
@@ -97,7 +99,8 @@ public class ShoppingCartService {
 		List<UserCart> itemsInCart = userCartRepo.findAllByUserIdAndCartIdAndIsPayed(Long.valueOf(userId), Long.valueOf(cartId), false);
 		itemsInCart.stream().forEach(a-> {
 			if(validateStorage(a.getItemId(),a.getItemNumber(), message)) {
-				totalAmount.setTotal(totalAmount.getTotal() + a.getItemTotal());
+				double total = totalAmount.getTotal()+ a.getItemTotal();
+				totalAmount.setTotal(total);
 				updateItemStorage(a.getItemId(), a.getItemNumber());
 				updateUserCartItemsStatus(a);
 			}
@@ -120,7 +123,7 @@ public class ShoppingCartService {
 		order.setUserId(Long.valueOf(userId));
 		order.setCartId(Long.valueOf(cartId));
 		order.setTotal(total);
-		order.setStatus(OrderStatus.NEW);
+		order.setStatus(OrderStatus.NEW.toString());
 		Order response = orderRepo.save(order);
 		return response;
 	}
@@ -192,5 +195,31 @@ public class ShoppingCartService {
 			cartData.setTotal(totalAmount.getTotal());
 		});
 		return cartData;
+	}
+
+	public OrderDetail getOrderDetail(String orderId) {
+		Order order = orderRepo.findByOrderId(Long.valueOf(orderId));
+		OrderDetail orderDetail = new OrderDetail();
+		List<UserCart> items = userCartRepo.findAllByUserIdAndCartIdAndIsPayed(order.getUserId(),order.getCartId(), true);
+		orderDetail.setCartId(order.getCartId());
+		orderDetail.setUserId(order.getUserId());
+		orderDetail.setOrderId(order.getOrderId());
+		orderDetail.setStatus(order.getStatus());
+		TotalAmount totalAmount = new TotalAmount(0);
+		items.stream().forEach(a-> {
+			ItemData itemData = new ItemData();
+			itemData.setItemId(a.getItemId());
+			Item item = getItem(a.getItemId());
+			itemData.setItemName(item.getName());
+			itemData.setCount(a.getItemNumber());
+			itemData.setSinglePrice(item.getPrice());
+			itemData.setTotal(itemData.getSinglePrice() * itemData.getCount());
+			List<ItemData> itemData1 = orderDetail.getItemDatas();
+			itemData1.add(itemData);
+			totalAmount.setTotal(totalAmount.getTotal() + itemData.getTotal());
+			orderDetail.setItemDatas(itemData1);
+			orderDetail.setTotal(totalAmount.getTotal());
+		});
+		return orderDetail;
 	}
 }
