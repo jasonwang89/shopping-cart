@@ -17,13 +17,15 @@ public class Storage implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long itemId;
 	private int total;
+	private int version;
 
 	public Storage() {
 	}
 
-	public Storage(long itemId, int total) {
+	public Storage(long itemId, int total, int version) {
 		this.itemId = itemId;
 		this.total = total;
+		this.version = version;
 	}
 
 	public long getItemId() {
@@ -40,5 +42,13 @@ public class Storage implements Serializable {
 
 	public void setTotal(int total) {
 		this.total = total;
+	}
+
+	public int getVersion() {
+		return version;
+	}
+
+	public void setVersion(int version) {
+		this.version = version;
 	}
 }

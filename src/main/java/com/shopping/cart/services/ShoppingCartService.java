@@ -7,11 +7,13 @@ import com.shopping.cart.entity.Order;
 import com.shopping.cart.entity.Storage;
 import com.shopping.cart.entity.User;
 import com.shopping.cart.entity.UserCart;
+import com.shopping.cart.exception.VersionException;
 import com.shopping.cart.model.CartData;
 import com.shopping.cart.model.ItemData;
 import com.shopping.cart.model.Message;
 import com.shopping.cart.model.OrderDetail;
 import com.shopping.cart.model.TotalAmount;
+import com.shopping.cart.model.ValidateVersion;
 import com.shopping.cart.repo.ItemRepo;
 import com.shopping.cart.repo.OrderRepo;
 import com.shopping.cart.repo.StorageRepo;
@@ -55,23 +57,21 @@ public class ShoppingCartService {
 		return itemRepo.getById(itemId);
 	}
 
+	@Transactional
 	public Message modifyItemInCart(final String itemId, final int num, final long userId, final String cartId) {
 		Message message = new Message("", "");
 		UserCart userCart;
 		Item item = getItem(Long.valueOf(itemId));
 		long cartNum = 0;
+		if(!validateStorage(item.getItemId(), num, message).isValid()) {
+			return message;
+		}
 		if(cartId == null || cartId.isEmpty()) {
-			if(!validateStorage(item.getItemId(), num, message)) {
-				return message;
-			}
 			cartNum = Math.abs(random.nextInt(1000000));
 			userCart = initializeCart(userId, cartNum, item, num);
 			userCartRepo.save(userCart);
 		} else {
 			userCart = userCartRepo.findByCartIdAndItemId(Long.valueOf(cartId), Long.valueOf(itemId));
-			if(!validateStorage(item.getItemId(), num, message)) {
-				return message;
-			}
 			if(userCart == null) {
 				//create new row in userCart
 				userCart = initializeCart(userId, Long.valueOf(cartId), item, num);
@@ -88,6 +88,7 @@ public class ShoppingCartService {
 		return message;
 	}
 
+	@Transactional
 	public Message placeOrder(String userId, String cartId, String cardNo, String expireDate, String cvc) {
 		Message message = new Message("", "");
 		if(!validatePayment(Long.valueOf(userId), cardNo, expireDate, cvc)) {
@@ -98,11 +99,18 @@ public class ShoppingCartService {
 		final TotalAmount totalAmount = new TotalAmount(0);
 		List<UserCart> itemsInCart = userCartRepo.findAllByUserIdAndCartIdAndIsPayed(Long.valueOf(userId), Long.valueOf(cartId), false);
 		itemsInCart.stream().forEach(a-> {
-			if(validateStorage(a.getItemId(),a.getItemNumber(), message)) {
-				double total = totalAmount.getTotal()+ a.getItemTotal();
-				totalAmount.setTotal(total);
-				updateItemStorage(a.getItemId(), a.getItemNumber());
-				updateUserCartItemsStatus(a);
+			try {
+				ValidateVersion validateVersion = validateStorage(a.getItemId(),a.getItemNumber(), message);
+				if(validateVersion.isValid()) {
+					double total = totalAmount.getTotal()+ a.getItemTotal();
+					totalAmount.setTotal(total);
+					updateItemStorage(a.getItemId(), a.getItemNumber(), validateVersion.getVersion());
+					updateUserCartItemsStatus(a);
+				}
+			} catch(VersionException ve) {
+				String detail = message.getDetail();
+				detail += String.format(STORAGE_IS_CHANGE, a.getItemId());
+				message.setDetail(detail);
 			}
 		});
 		if(!itemsInCart.isEmpty()) {
@@ -124,8 +132,7 @@ public class ShoppingCartService {
 		order.setCartId(Long.valueOf(cartId));
 		order.setTotal(total);
 		order.setStatus(OrderStatus.NEW.toString());
-		Order response = orderRepo.save(order);
-		return response;
+		return orderRepo.save(order);
 	}
 
 	private void updateUserCartItemsStatus(UserCart userCart) {
@@ -133,30 +140,37 @@ public class ShoppingCartService {
 		userCartRepo.save(userCart);
 	}
 
-	private void updateItemStorage(long itemId, int itemNumber) {
+	private void updateItemStorage(long itemId, int itemNumber, int version) {
 		Storage storage = storageRepo.getById(itemId);
-		storage.setTotal(storage.getTotal()-itemNumber);
-		storageRepo.save(storage);
+		if(version != storage.getVersion()) {
+			throw new VersionException("version doesn't match");
+		} else {
+			storage.setTotal(storage.getTotal()-itemNumber);
+			storage.setVersion(version+1);
+			storageRepo.save(storage);
+		}
 	}
 
 	private boolean validatePayment(long userId, String cardNo, String expireDate, String cvc) {
 		User user = userRepo.findByUserId(userId);
-		if(user.getCardNo().equals(cardNo) && user.getExpireDate().equals(expireDate) && user.getCvc().equals(cvc)) {
-			return true;
-		}
-		return false;
+		return user.getCardNo().equals(cardNo) && user.getExpireDate().equals(expireDate) && user.getCvc().equals(cvc);
 	}
 
-	private boolean validateStorage(final long itemId, final int num, final Message message) {
-		int storageNum = getStorage(itemId);
+	private ValidateVersion validateStorage(final long itemId, final int num, final Message message) {
+		Storage storage = storageRepo.getById(itemId);
+		ValidateVersion validateVersion = new ValidateVersion();
 		String detail = message.getDetail();
-		if(num > storageNum) {
+		if(num > storage.getTotal()) {
 			message.setStatus(ShoppingCartConstant.FAILURE);
-			detail += String.format(storageNum == 0? ShoppingCartConstant.OUT_OF_STOCK :ShoppingCartConstant.ORDER_NUMBER_OVER_STOCK, itemId);
+			detail += String.format(storage.getTotal() == 0? ShoppingCartConstant.OUT_OF_STOCK :ShoppingCartConstant.ORDER_NUMBER_OVER_STOCK, itemId);
 			message.setDetail(detail);
-			return false;
+			validateVersion.setValid(false);
+			validateVersion.setVersion(storage.getVersion());
+			return validateVersion;
 		}
-		return true;
+		validateVersion.setValid(true);
+		validateVersion.setVersion(storage.getVersion());
+		return validateVersion;
 	}
 
 	private UserCart initializeCart(long userId, long cartNum, Item item, int num) {

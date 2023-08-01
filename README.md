@@ -73,5 +73,6 @@ There are couple options to handle concurrent scenario.
 * Use redis to add distribute lock and read/write through redis.
 * Exception handling and logging.
 * Rollback solution and validation
+* JUnit, Integration Test and Automation test
 
 ---
