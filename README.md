@@ -11,6 +11,11 @@
 2. run ShoppingCartApplication locally.
 
 
+###  Postman collection
+
+I uploaded postman collection to postman folder.
+* Import json file to postman. It has all APIs showed below.
+
 ###  API
 1. check storage
 

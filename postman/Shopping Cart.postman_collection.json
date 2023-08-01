@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "98cec974-9f44-4d0c-9c3e-bc000a73e0b5",
+		"name": "Shopping Cart",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "660237"
+	},
+	"item": [
+		{
+			"name": "check storage",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/storage/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"storage",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get item detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/item/1001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"item",
+						"1001"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create or modify item in shopping cart",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get all items in cart",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/cart?userId=8001&cartId=100001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"cart"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "8001"
+						},
+						{
+							"key": "cartId",
+							"value": "100001"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "clear all items in cart",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/cart/clear?userId=8001&cartId=863359",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"cart",
+						"clear"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "8001"
+						},
+						{
+							"key": "cartId",
+							"value": "863359"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "place order",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/order/place?userId=8001&cartId=863359&cardNo=123456&expireDate=2028/08/08&cvc=888",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"order",
+						"place"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "8001"
+						},
+						{
+							"key": "cartId",
+							"value": "863359"
+						},
+						{
+							"key": "cardNo",
+							"value": "123456"
+						},
+						{
+							"key": "expireDate",
+							"value": "2028/08/08"
+						},
+						{
+							"key": "cvc",
+							"value": "888"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get order detail",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8443/shopping-cart/cart?userId=8001&cartId=100001",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8443",
+					"path": [
+						"shopping-cart",
+						"cart"
+					],
+					"query": [
+						{
+							"key": "userId",
+							"value": "8001"
+						},
+						{
+							"key": "cartId",
+							"value": "100001"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
