@@ -20,9 +20,12 @@ import com.shopping.cart.repo.StorageRepo;
 import com.shopping.cart.repo.UserCartRepo;
 import com.shopping.cart.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Random;
 
@@ -65,7 +68,7 @@ public class ShoppingCartService {
 		return storage.getTotal();
 	}
 
-	public Item getItem(final long itemId) {
+	public Item getItem(final long itemId) throws EntityNotFoundException{
 		return itemRepo.getById(itemId);
 	}
 
