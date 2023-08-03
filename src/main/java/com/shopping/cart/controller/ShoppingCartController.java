@@ -4,6 +4,7 @@ import com.shopping.cart.entity.Item;
 import com.shopping.cart.entity.Order;
 import com.shopping.cart.entity.User;
 import com.shopping.cart.model.CartData;
+import com.shopping.cart.model.ErrorResponse;
 import com.shopping.cart.model.Message;
 import com.shopping.cart.model.OrderDetail;
 import com.shopping.cart.services.ShoppingCartService;
@@ -35,18 +36,9 @@ public class ShoppingCartController {
 		return shoppingCartService.getStorage(Long.valueOf(itemId));
 	}
 
-	@GetMapping(path = "/item/{itemId}")
-	public ResponseEntity<Item> getItemDetail(@PathVariable String itemId) {
-		Item item;
-		try {
-			item = shoppingCartService.getItem(Long.valueOf(itemId));
-			if(item.getName() != null) {
-				return new ResponseEntity<>(item, HttpStatus.OK);
-			}
-		} catch(Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<>(item, HttpStatus.OK);
+	@GetMapping(path = "/item/{itemId}", produces = "application/json;charset=utf-8")
+	public ResponseEntity<?> getItemDetail(@PathVariable String itemId) {
+		return new ResponseEntity<>(shoppingCartService.getItem(Long.valueOf(itemId)), HttpStatus.OK);
 	}
 
 	@GetMapping(path = "/items")

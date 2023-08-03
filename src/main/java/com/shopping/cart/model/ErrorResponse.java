@@ -10,5 +10,24 @@ public class ErrorResponse {
 		this.status = status;
 		this.detail = detail;
 	}
+
+	public ErrorResponse() {
+	}
+
+	public HttpStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(HttpStatus status) {
+		this.status = status;
+	}
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
 }
 

@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import static com.shopping.cart.constant.ShoppingCartConstant.*;
@@ -69,7 +70,11 @@ public class ShoppingCartService {
 	}
 
 	public Item getItem(final long itemId) throws EntityNotFoundException{
-		return itemRepo.getById(itemId);
+		Optional<Item> itemOp = itemRepo.findById(itemId);
+		if(itemOp.isEmpty()) {
+			throw new EntityNotFoundException();
+		}
+		return itemOp.get();
 	}
 
 	@Transactional

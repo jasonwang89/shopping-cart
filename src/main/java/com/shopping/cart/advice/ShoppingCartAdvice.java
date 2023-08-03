@@ -17,6 +17,6 @@ public class ShoppingCartAdvice {
 	@ResponseStatus(HttpStatus.NOT_FOUND)
 	@ResponseBody
 	public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ee) {
-		return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_FOUND, ee.getMessage()), HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(new ErrorResponse(HttpStatus.NOT_FOUND, "Entity not found"), HttpStatus.NOT_FOUND);
 	}
 }
