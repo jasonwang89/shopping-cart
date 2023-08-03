@@ -10,5 +10,5 @@ public class ShoppingCartConstant {
 	public static final String STORAGE_IS_CHANGE = "%s storage is changing. please retry to place order again";
 	public static final String USER_PAYMENT_METHOD_NOT_VALID = "%s payment method is not valid";
 	public static final String CREATE_OR_UPDATE_CART = "%s created or updated cart";
-	public static final String NO_ITEMS_PURCHASED = "no items purchased";
+	public static final String NO_ITEMS_PURCHASED = "Item amount is over the storage. No items purchased";
 }

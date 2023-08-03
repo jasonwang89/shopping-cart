@@ -13,6 +13,7 @@ import com.shopping.cart.model.ItemData;
 import com.shopping.cart.model.Message;
 import com.shopping.cart.model.OrderDetail;
 import com.shopping.cart.model.TotalAmount;
+import com.shopping.cart.model.ValidItemSize;
 import com.shopping.cart.model.ValidateVersion;
 import com.shopping.cart.repo.ItemRepo;
 import com.shopping.cart.repo.OrderRepo;
@@ -118,6 +119,7 @@ public class ShoppingCartService {
 		}
 		final TotalAmount totalAmount = new TotalAmount(0);
 		List<UserCart> itemsInCart = userCartRepo.findAllByUserIdAndCartIdAndIsPayed(Long.valueOf(userId), Long.valueOf(cartId), false);
+		ValidItemSize validItemSize = new ValidItemSize(itemsInCart.size());
 		itemsInCart.stream().forEach(a-> {
 			try {
 				ValidateVersion validateVersion = validateStorage(a.getItemId(),a.getItemNumber(), message);
@@ -126,6 +128,8 @@ public class ShoppingCartService {
 					totalAmount.setTotal(total);
 					updateItemStorage(a.getItemId(), a.getItemNumber(), validateVersion.getVersion());
 					updateUserCartItemsStatus(a);
+				} else {
+					validItemSize.setCount(validItemSize.getCount()-1);
 				}
 			} catch(VersionException ve) {
 				String detail = message.getDetail();
@@ -133,7 +137,7 @@ public class ShoppingCartService {
 				message.setDetail(detail);
 			}
 		});
-		if(!itemsInCart.isEmpty()) {
+		if(validItemSize.getCount()>0) {
 			Order response = createOrder(userId, cartId, totalAmount.getTotal());
 			message.setStatus(SUCCESS);
 			message.setDetail(response.toString());

@@ -38,6 +38,7 @@ I uploaded postman collection to postman folder.
 6. place order
 
    http://localhost:8443/shopping-cart/order/place?userId=8001&cartId=221921&cardNo=123456&expireDate=2028/08/08&cvc=888
+*  when place order, it will check storage again and order items which is less than storage number.
 7. get order details
 
    http://localhost:8443/shopping-cart/order/{orderId}
